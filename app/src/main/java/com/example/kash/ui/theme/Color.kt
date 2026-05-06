@@ -14,3 +14,6 @@ val Pink40 = Color(0xFF7D5260)
 val EmeraldPrimary = Color(0xFF00897B) // El verde oscuro del fondo
 val EmeraldLight = Color(0xFF4DB6AC)    // Un verde más claro para detalles
 val CardWhite = Color(0xFFFFFFFF)       // El blanco de la tarjeta de login
+// Colores de tu diseño
+val TealMain = Color(0xFF00A896)
+val BackgroundGray = Color(0xFFF5F7F9)

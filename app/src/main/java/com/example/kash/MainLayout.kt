@@ -17,10 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// Colores de tu diseño
-val TealMain = Color(0xFF00A896)
-val BackgroundGray = Color(0xFFF5F7F9)
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.kash.ui.theme.BackgroundGray
+import com.example.kash.ui.theme.TealMain
 
 /**
  * ESTE ES EL LAYOUT MAESTRO.
@@ -28,12 +28,15 @@ val BackgroundGray = Color(0xFFF5F7F9)
  */
 @Composable
 fun MainLayout(
+    navController: NavHostController,
     currentRoute: String = "Inicio", // Para saber qué ícono pintar de seleccionado
+    onLogout: () -> Unit,
     content: @Composable (PaddingValues) -> Unit
+
 ) {
     Scaffold(
-        topBar = { HeaderTopBar() },
-        bottomBar = { FooterBottomBar(currentRoute) },
+        topBar = {  HeaderTopBar(onLogout = onLogout) },
+        bottomBar = { FooterBottomBar(navController, currentRoute) },
         containerColor = BackgroundGray // El fondo grisecito claro de la app
     ) { paddingValues ->
         // Aquí adentro es donde se va a renderizar lo que hagan tus compañeros
@@ -52,7 +55,7 @@ fun MainLayout(
 // 1. EL ENCABEZADO (Amarillo Superior)
 // ==========================================
 @Composable
-fun HeaderTopBar() {
+fun HeaderTopBar(onLogout: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,18 +90,14 @@ fun HeaderTopBar() {
 
         // Lado Derecho: Íconos de notificación y salida
         Row {
-            Icon(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "Notificaciones",
-                tint = Color.White
-            )
             Spacer(modifier = Modifier.width(16.dp))
-            Icon(
-                // Cambio 1: Uso de AutoMirrored para ExitToApp
-                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                contentDescription = "Salir",
-                tint = Color.White
-            )
+            IconButton(onClick = onLogout) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                    contentDescription = "Salir",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
@@ -107,7 +106,7 @@ fun HeaderTopBar() {
 // 2. EL PIE DE PÁGINA (Amarillo Inferior)
 // ==========================================
 @Composable
-fun FooterBottomBar(currentRoute: String) {
+fun FooterBottomBar(navController: NavHostController, currentRoute: String) {
     NavigationBar(
         containerColor = TealMain,
         contentColor = Color.White,
@@ -131,7 +130,13 @@ fun FooterBottomBar(currentRoute: String) {
                 label = { Text(route, fontSize = 10.sp) },
                 selected = isSelected,
                 onClick = {
-                    // Aquí irá la lógica de navegación (NavController) más adelante
+                        navController.navigate(route.lowercase()) { // le decimos que viaje a donde le haya dado click, toma el nombre de donde haya dado click
+                            popUpTo(navController.graph.startDestinationId) { // evitar que se amontonen muchas pantallas
+                                saveState = true
+                            }
+                            launchSingleTop = true // si le da click en un icono donde ya esta no pasa nada, y no abre nada
+                            restoreState = true // si cambia de pantalla y vuelve, trata de recordar donde andaba
+                        }
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = TealMain, // Si está seleccionado, el icono se vuelve verde
@@ -147,26 +152,25 @@ fun FooterBottomBar(currentRoute: String) {
 
 // ==========================================
 // VISTA PREVIA (Totalmente afuera)
-// ==========================================
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun MainLayoutPreview() {
-    // Llamamos a tu layout maestro
-    // Cambio 3: Usamos '_' porque no necesitamos usar paddingValues en esta vista previa simulada
-    MainLayout(currentRoute = "Inicio") { _ ->
-
-        // Aquí simulamos lo que tus compañeros pondrían adentro
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Aquí irá el código de la pantalla de tus compañeros",
-                fontSize = 16.sp,
-                color = Color.Gray,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
-    }
-}
+//// ==========================================
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun MainLayoutPreview() {
+//    // Llamamos a tu layout maestro
+//    // Cambio 3: Usamos '_' porque no necesitamos usar paddingValues en esta vista previa simulada
+//    MainLayout(navController = rememberNavController(), currentRoute = "Inicio") { _ ->
+//
+//        // Aquí simulamos lo que tus compañeros pondrían adentro
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize(),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Text(
+//                text = "Aquí irá el código de la pantalla de tus compañeros",
+//                fontSize = 16.sp,
+//                color = Color.Gray,
+//                modifier = Modifier.padding(16.dp)
+//            )
+//        }
+//    }

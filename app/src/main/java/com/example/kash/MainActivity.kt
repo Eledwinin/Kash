@@ -4,45 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.kash.ui.ahorros.AhorrosScreen
+import com.example.kash.ui.home.HomeScreen
+import com.example.kash.ui.informes.InformesScreen
 import com.example.kash.ui.login.LoginScreen
-import com.example.kash.ui.theme.CardWhite
-import com.example.kash.ui.theme.EmeraldPrimary
+import com.example.kash.ui.perfil.perfilScreen
+import com.example.kash.ui.presupuestos.PresupuestosScreen
 import com.example.kash.ui.theme.KashTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,37 +21,69 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             KashTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainApp()
+                val navController = rememberNavController()
+
+                NavHost(navController = navController, startDestination = "login") {
+                    // FUNCIÓN REUTILIZABLE PARA CERRAR SESIÓN
+                    val logoutAction = {
+                        navController.navigate("login") {
+                            popUpTo("inicio") { inclusive = true }
+                        }
+                    }
+
+                    // Definimos la ruta del Login
+                    composable("login") {
+                        LoginScreen(onLoginSuccess = {
+                            // Cuando el login sea exitoso, navegamos al inicio
+                            navController.navigate("inicio") {
+                                // Esto borra el login del historial para que no se pueda volver atrás
+                                popUpTo("login") { inclusive = true }
+                            }
+                        })
+                    }
+                    composable("inicio") {
+                        MainLayout(navController = navController, currentRoute = "Inicio", onLogout = logoutAction) {
+                            // Usamos el HomeScreen y definimos qué hace al cerrar sesión
+                            HomeScreen(onLogout = {
+                                navController.navigate("login") {
+                                    popUpTo("inicio") { inclusive = true }
+                                }
+                            })
+                        }
+                    }
+                    composable("ahorros") {
+                        MainLayout(navController = navController, currentRoute = "Ahorros", onLogout = logoutAction) {
+                            AhorrosScreen()
+                        }
+                    }
+                    composable("presupuestos") {
+                        MainLayout(navController = navController, currentRoute = "Presupuestos", onLogout = logoutAction) {
+                            PresupuestosScreen()
+                        }
+                    }
+                    composable("informes") {
+                        MainLayout(navController = navController, currentRoute = "Informes", onLogout = logoutAction) {
+                            InformesScreen()
+                        }
+                    }
+                    composable("perfil"){
+                        MainLayout(navController = navController, currentRoute = "Perfil", onLogout = logoutAction){
+                            perfilScreen()
+                        }
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun MainApp() {
-    // El "cerebro" que decide qué pantalla mostrar
-    var isLoggedIn by remember { mutableStateOf(false) }
-
-    if (!isLoggedIn) {
-        LoginScreen(onLoginSuccess = { isLoggedIn = true })
-    } else {
-        HomeScreen(onLogout = { isLoggedIn = false })
-    }
-}
 
 
-@Composable
-fun HomeScreen(onLogout: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("¡Bienvenido a Kash! 🚀", fontSize = 24.sp, color = EmeraldPrimary)
-            Spacer(modifier = Modifier.height(20.dp))
-            Button(onClick = onLogout) {
-                Text("Cerrar Sesión")
-            }
-        }
-    }
+
+
+
+
+
+
+
+
 }
 
