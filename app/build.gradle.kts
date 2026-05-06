@@ -74,5 +74,7 @@ dependencies {
     // 3. El compilador que usa KSP (el que quita el error rojo de la palabra 'ksp')
     ksp("androidx.room:room-compiler:$room_version")
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+
 
 }
