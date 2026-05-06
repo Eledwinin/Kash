@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class Usuario(
     @PrimaryKey(autoGenerate = true) val usuarioId: Int = 0,
     val nombre: String,
-    val saldoTotal: Double = 0.0,
-    val moneda: String = "USD" // Ejemplo: USD, MXN, EUR
+    val correo: String,
+    val contrasena: String,
+    val ingresoMensualBase: Double = 0.0,
+    val moneda: String = "USD"
 )
