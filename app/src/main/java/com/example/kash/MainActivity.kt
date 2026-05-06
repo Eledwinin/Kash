@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.kash.ui.login.LoginScreen
 import com.example.kash.ui.theme.CardWhite
 import com.example.kash.ui.theme.EmeraldPrimary
 import com.example.kash.ui.theme.KashTheme
@@ -50,154 +52,36 @@ class MainActivity : ComponentActivity() {
         setContent {
             KashTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    MainApp()
                 }
             }
         }
     }
 }
 
-
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MainApp() {
+    // El "cerebro" que decide qué pantalla mostrar
+    var isLoggedIn by remember { mutableStateOf(false) }
+
+    if (!isLoggedIn) {
+        LoginScreen(onLoginSuccess = { isLoggedIn = true })
+    } else {
+        HomeScreen(onLogout = { isLoggedIn = false })
+    }
 }
 
+
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
-
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(EmeraldPrimary),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(80.dp))
-
-
-        Icon(
-            imageVector = Icons.Default.Lock,
-            contentDescription = "Logo",
-            tint = Color.White,
-            modifier = Modifier.size(80.dp)
-        )
-
-        Text(
-            text = "Kash",
-            color = Color.White,
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "Tus finanzas bajo control",
-            color = Color.White.copy(alpha = 0.8f),
-            fontSize = 14.sp
-        )
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        // 2. Tarjeta Blanca
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
-            color = CardWhite
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 30.dp, vertical = 40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Iniciar Sesión",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Correo Electrónico") },
-                    placeholder = { Text("tu@email.com") },
-                    leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                // Campo de Contraseña
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = {
-                        Text("Contraseña")
-                            },
-                    leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
-                    visualTransformation = PasswordVisualTransformation(),
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
-                )
-
-                // Olvidaste contraseña
-                TextButton(
-                    onClick = { /* TODO */ },
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Text(
-                        text = "¿Olvidaste tu contraseña?",
-                        color = EmeraldPrimary,
-                        fontSize = 12.sp
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // Botón Ingresar
-                Button(
-                    onClick = { /* Acción de login */ },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(55.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = EmeraldPrimary),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(text = "Ingresar", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                // Registro
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "¿No tienes cuenta? ", fontSize = 14.sp)
-                    TextButton(onClick = { /* Ir a registro */ }) {
-                        Text(
-                            text = "Regístrate aquí",
-                            color = EmeraldPrimary,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+fun HomeScreen(onLogout: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("¡Bienvenido a Kash! 🚀", fontSize = 24.sp, color = EmeraldPrimary)
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = onLogout) {
+                Text("Cerrar Sesión")
             }
         }
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KashTheme {
-        Greeting("el mero edwin es una gran comita")
-    }
-}
