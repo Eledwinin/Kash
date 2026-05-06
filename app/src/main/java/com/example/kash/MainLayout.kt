@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.* // <-- Importación nueva para los íconos actualizados
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -93,7 +94,8 @@ fun HeaderTopBar() {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Icon(
-                imageVector = Icons.Default.ExitToApp,
+                // Cambio 1: Uso de AutoMirrored para ExitToApp
+                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                 contentDescription = "Salir",
                 tint = Color.White
             )
@@ -115,7 +117,8 @@ fun FooterBottomBar(currentRoute: String) {
         val items = listOf(
             "Inicio" to Icons.Default.Home,
             "Ahorros" to Icons.Default.Star, // Cambia por tu icono de cerdito
-            "Presupuestos" to Icons.Default.List,
+            // Cambio 2: Uso de AutoMirrored para List
+            "Presupuestos" to Icons.AutoMirrored.Filled.List,
             "Informes" to Icons.Default.Build, // Cambia por tu icono de gráficas
             "Perfil" to Icons.Default.Person
         )
@@ -149,7 +152,8 @@ fun FooterBottomBar(currentRoute: String) {
 @Composable
 fun MainLayoutPreview() {
     // Llamamos a tu layout maestro
-    MainLayout(currentRoute = "Inicio") { paddingValues ->
+    // Cambio 3: Usamos '_' porque no necesitamos usar paddingValues en esta vista previa simulada
+    MainLayout(currentRoute = "Inicio") { _ ->
 
         // Aquí simulamos lo que tus compañeros pondrían adentro
         Box(
