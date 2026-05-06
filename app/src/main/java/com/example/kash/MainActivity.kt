@@ -42,6 +42,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     KashTheme {
-        Greeting("el mero edwin commiddd comita")
+        Greeting("el mero edwin es una gran comita")
     }
 }
