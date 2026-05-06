@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun AhorrosScreen() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(
-            "💰 Pantalla de Ahorros\n(Próximamente)",
-            fontSize = 20.sp,
-            textAlign = TextAlign.Center
-        )
-    }
+//    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//        Text(
+//            "💰 Pantalla de Ahorros\n(Próximamente)",
+//            fontSize = 20.sp,
+//            textAlign = TextAlign.Center
+//        )
+//    }
 }
